@@ -134,7 +134,7 @@ var _main = function () {
 };
 
 // Anonymous "self-invoking" function
-(function() {
+
     // Load the script
     var script = document.createElement("SCRIPT");
     script.src = 'https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/jquery-latest.min.js';
@@ -145,6 +145,5 @@ var _main = function () {
         _main();
     };
     document.getElementsByTagName("head")[0].appendChild(script);
-})();
 
 //((function(e,s){e.src=s;e.onload=function(){jQuery.noConflict();$=jQuery;_main()};document.head.appendChild(e);})(document.createElement('script'),'https://code.jquery.com/jquery-latest.min.js'))
