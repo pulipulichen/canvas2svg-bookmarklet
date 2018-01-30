@@ -18,7 +18,9 @@ var _load_canvassvg = function (_callback) {
     }
 };
 
-_need_reload = false;
+if (typeof(_need_reload) === "undefined") {
+	_need_reload = false;
+}
 
 var _convert_canvas_to_svg = function (_callback) {
 
