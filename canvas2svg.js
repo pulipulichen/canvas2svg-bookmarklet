@@ -37,21 +37,21 @@ var _convert_canvas_to_svg = function (_callback) {
                 _canvas.attr("id", "canvas_" + _i);
             }
             var _id = _canvas.attr("id");
-			console.log(_id);
+            console.log(_id);
 
             var cs = new CanvasSVG.Deferred();
             var canvas = document.getElementById(_id);
-			$(canvas).click();
-			cs.wrapCanvas(canvas);
-			//var ctx = canvas.getContext('2d');
-			var svg_object = cs.getSVG();
-			var svg_text = svg_object.outerHTML;
-			alert(svg_text);
 
-			var svg = new Blob([svg_text], {type: 'text/plain'});
-			saveAs(svg, _id + ".svg");
+            cs.wrapCanvas(canvas);
+            $(canvas).click();
+            var svg_object = cs.getSVG();
+            var svg_text = svg_object.outerHTML;
 
-			_next(_i);
+            var svg = new Blob([svg_text], {type: 'text/plain'});
+            saveAs(svg, _id + ".svg");
+
+            _next(_i);
+
         } else {
             if (typeof (_callback) === "function") {
                 _callback();
@@ -63,24 +63,20 @@ var _convert_canvas_to_svg = function (_callback) {
 };
 
 var _main = function () {
-	_load_filesaver(function () {
-		_load_canvassvg(function () {
-			_convert_canvas_to_svg();
-		});
-	});	
+    _load_filesaver(function () {
+        _load_canvassvg(function () {
+            _convert_canvas_to_svg();
+        });
+    });
 };
 
-// Anonymous "self-invoking" function
-
-    // Load the script
-    var script = document.createElement("SCRIPT");
-    script.src = 'https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/jquery-latest.min.js';
-    script.type = 'text/javascript';
-    script.onload = function() {
-        jQuery.noConflict();
-        $ = window.jQuery;
-        _main();
-    };
-    document.getElementsByTagName("head")[0].appendChild(script);
-
-//((function(e,s){e.src=s;e.onload=function(){jQuery.noConflict();$=jQuery;_main()};document.head.appendChild(e);})(document.createElement('script'),'https://code.jquery.com/jquery-latest.min.js'))
+// Load the script
+var script = document.createElement("SCRIPT");
+script.src = 'https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/jquery-latest.min.js';
+script.type = 'text/javascript';
+script.onload = function () {
+    jQuery.noConflict();
+    $ = window.jQuery;
+    _main();
+};
+document.getElementsByTagName("head")[0].appendChild(script);
