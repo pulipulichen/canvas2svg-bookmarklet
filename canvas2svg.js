@@ -18,6 +18,8 @@ var _load_canvassvg = function (_callback) {
     }
 };
 
+_need_reload = false;
+
 var _convert_canvas_to_svg = function (_callback) {
 
     var _canvas_coll = $('canvas:visible');
@@ -37,7 +39,7 @@ var _convert_canvas_to_svg = function (_callback) {
                 _canvas.attr("id", "canvas_" + _i);
             }
             var _id = _canvas.attr("id");
-            console.log(_id);
+            //console.log(_id);
 
             var cs = new CanvasSVG.Deferred();
             var canvas = document.getElementById(_id);
@@ -56,6 +58,7 @@ var _convert_canvas_to_svg = function (_callback) {
             if (typeof (_callback) === "function") {
                 _callback();
             }
+			_need_reload = true;
         }
     };
 
@@ -63,6 +66,14 @@ var _convert_canvas_to_svg = function (_callback) {
 };
 
 var _main = function () {
+	
+	if (_need_reload === true) {
+		if (window.confirm("Please reload webpage to save canvas again. Do you want to reload now?")) {
+			location.reload();
+		}
+		return;
+	}
+	
     _load_filesaver(function () {
         _load_canvassvg(function () {
             _convert_canvas_to_svg();
