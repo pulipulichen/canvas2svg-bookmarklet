@@ -37,19 +37,21 @@ var _convert_canvas_to_svg = function (_callback) {
                 _canvas.attr("id", "canvas_" + _i);
             }
             var _id = _canvas.attr("id");
+			console.log(_id);
 
             var cs = new CanvasSVG.Deferred();
             var canvas = document.getElementById(_id);
-            cs.wrapCanvas(canvas);
-			setTimeout(function () {
-				//var ctx = canvas.getContext('2d');
+			$(canvas).click();
+			cs.wrapCanvas(canvas);
+			//var ctx = canvas.getContext('2d');
+			var svg_object = cs.getSVG();
+			var svg_text = svg_object.outerHTML;
+			alert(svg_text);
 
-				var svg = new Blob([cs.getSVG().outerHTML], {type: 'text/plain'});
-				saveAs(svg, _id + ".svg");
+			var svg = new Blob([svg_text], {type: 'text/plain'});
+			saveAs(svg, _id + ".svg");
 
-				_next(_i);
-
-			}, 1000);
+			_next(_i);
         } else {
             if (typeof (_callback) === "function") {
                 _callback();
