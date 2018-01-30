@@ -133,4 +133,18 @@ var _main = function () {
 	});	
 };
 
-((function(e,s){e.src=s;e.onload=function(){jQuery.noConflict();$=jQuery;_main()};document.head.appendChild(e);})(document.createElement('script'),'https://code.jquery.com/jquery-latest.min.js'))
+// Anonymous "self-invoking" function
+(function() {
+    // Load the script
+    var script = document.createElement("SCRIPT");
+    script.src = 'https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/jquery-latest.min.js';
+    script.type = 'text/javascript';
+    script.onload = function() {
+        jQuery.noConflict();
+        $ = window.jQuery;
+        _main();
+    };
+    document.getElementsByTagName("head")[0].appendChild(script);
+})();
+
+//((function(e,s){e.src=s;e.onload=function(){jQuery.noConflict();$=jQuery;_main()};document.head.appendChild(e);})(document.createElement('script'),'https://code.jquery.com/jquery-latest.min.js'))
