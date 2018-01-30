@@ -9,7 +9,7 @@ var _load_filesaver = function (_callback) {
 };
 
 var _load_canvassvg = function (_callback) {
-    if (typeof (CanvasSVG) !== "function") {
+    if (typeof (CanvasSVG) !== "undefined") {
         return _callback();
     } else {
         $.getScript("https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/canvas-getsvg.js", function () {
@@ -41,12 +41,15 @@ var _convert_canvas_to_svg = function (_callback) {
             var cs = new CanvasSVG.Deferred();
             var canvas = document.getElementById(_id);
             cs.wrapCanvas(canvas);
-            var ctx = canvas.getContext('2d');
+			setTimeout(function () {
+				//var ctx = canvas.getContext('2d');
 
-            var svg = new Blob([cs.getSVG().outerHTML], {type: 'text/plain'});
-            saveAs(svg, _id + ".svg");
+				var svg = new Blob([cs.getSVG().outerHTML], {type: 'text/plain'});
+				saveAs(svg, _id + ".svg");
 
-            next(_i);
+				_next(_i);
+
+			}, 1000);
         } else {
             if (typeof (_callback) === "function") {
                 _callback();
