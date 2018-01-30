@@ -133,4 +133,4 @@ var _main = function () {
 	});	
 };
 
-(function(e,s){e.src=s;e.onload=function(){jQuery.noConflict();$=jQuery;_main();};document.head.appendChild(e);})(document.createElement('script'),'https://code.jquery.com/jquery-latest.min.js');
+(function(e,s){e.src=s;e.onload=function(){jQuery.noConflict();$=jQuery;_main()};document.head.appendChild(e);})(document.createElement('script'),'https://code.jquery.com/jquery-latest.min.js')
