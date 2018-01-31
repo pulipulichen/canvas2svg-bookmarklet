@@ -1,26 +1,30 @@
 var _load_filesaver = function (_callback) {
     if (typeof (saveAs) === "function") {
-        return _callback();
+        if (typeof (_callback) === "function") {
+			_callback();
+		}
     } else {
         $.getScript("https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/FileSaver.min.js", function () {
-            _callback();
+            if (typeof (_callback) === "function") {
+                _callback();
+            }
         });
     }
 };
 
 var _load_canvassvg = function (_callback) {
     if (typeof (CanvasSVG) !== "undefined") {
-        return _callback();
+        if (typeof (_callback) === "function") {
+			_callback();
+		}
     } else {
         $.getScript("https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/canvas-getsvg.js", function () {
-            _callback();
+            if (typeof (_callback) === "function") {
+                _callback();
+            }
         });
     }
 };
-
-if (typeof(_need_reload) === "undefined") {
-	_need_reload = false;
-}
 
 var _convert_canvas_to_svg = function (_callback) {
 
@@ -60,12 +64,57 @@ var _convert_canvas_to_svg = function (_callback) {
             if (typeof (_callback) === "function") {
                 _callback();
             }
-			_need_reload = true;
+			
         }
     };
 
     _loop(0);
 };
+
+var _save_svg = function (_callback) {
+
+    var _svg_coll = $('svg:visible');
+
+    var _next = function (_i) {
+        _i++;
+        setTimeout(function () {
+            _loop(_i);
+        }, 500);
+    };
+
+    var _loop = function (_i) {
+        if (_i < _svg_coll.length) {
+            var _svg_item = _svg_coll.eq(_i);
+
+            if (typeof (_svg_item.attr("id")) === "undefined") {
+                _svg_item.attr("id", "svg_" + _i);
+            }
+            var _id = _svg_item.attr("id");
+            //console.log(_id);
+
+            var svg_text = _svg_item.outerHTML;
+
+            var svg = new Blob([svg_text], {type: 'text/plain'});
+            saveAs(svg, _id + ".svg");
+
+            _next(_i);
+
+        } else {
+            if (typeof (_callback) === "function") {
+                _callback();
+            }
+			
+        }
+    };
+
+    _loop(0);
+};
+
+// -------------------------
+
+if (typeof(_need_reload) === "undefined") {
+	_need_reload = false;
+}
 
 var _main = function () {
 	
@@ -78,7 +127,11 @@ var _main = function () {
 	
     _load_filesaver(function () {
         _load_canvassvg(function () {
-            _convert_canvas_to_svg();
+            _convert_canvas_to_svg(function () {
+				_save_svg(function () {
+					_need_reload = true;
+				});
+			});
         });
     });
 };

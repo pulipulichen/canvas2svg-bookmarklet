@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Canvas to SVG test page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Canvas</h1>
+		
+		<!--
+		Code source: http://corehtml5canvas.com/code-live/ch01/example-1.1/example.html
+		-->
+		
+		<canvas id='canvas' width='600' height='300'>
+			Canvas not supported
+		</canvas>
+		
+		<script type="text/javascript">
+var canvas = document.getElementById('canvas'),
+    context = canvas.getContext('2d');
+   
+context.font = '38pt Arial';
+context.fillStyle = 'cornflowerblue';
+context.strokeStyle = 'blue';
+
+context.fillText("Hello Canvas", canvas.width/2 - 150,
+                                 canvas.height/2 + 15);
+
+context.strokeText("Hello Canvas", canvas.width/2 - 150,
+                                   canvas.height/2 + 15 );
+		
+		</script>
+		
+		<!-- ------------------------------ -->
+		
+		<h1>SVG</h1>
+		
+		<!--
+		Code source: https://www.w3schools.com/graphics/tryit.asp?filename=trysvg_circle
+		-->
+		
+		<svg height="100" width="100">
+		  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+		  Sorry, your browser does not support inline SVG.  
+		</svg> 
+		
+    </body>
+</html>
