@@ -1,10 +1,12 @@
+var _repo_baseurl = "https://pulipulichen.github.io/canvas2svg-bookmarklet";
+
 var _load_filesaver = function (_callback) {
     if (typeof (saveAs) === "function") {
         if (typeof (_callback) === "function") {
 			_callback();
 		}
     } else {
-        $.getScript("https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/FileSaver.min.js", function () {
+        $.getScript(_repo_baseurl + "/lib/FileSaver.min.js", function () {
             if (typeof (_callback) === "function") {
                 _callback();
             }
@@ -18,7 +20,21 @@ var _load_canvassvg = function (_callback) {
 			_callback();
 		}
     } else {
-        $.getScript("https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/canvas-getsvg.js", function () {
+        $.getScript(_repo_baseurl + "/lib/canvas-getsvg.js", function () {
+            if (typeof (_callback) === "function") {
+                _callback();
+            }
+        });
+    }
+};
+
+var _load_canvas2svg = function (_callback) {
+    if (typeof (C2S) !== "undefined") {
+        if (typeof (_callback) === "function") {
+			_callback();
+		}
+    } else {
+        $.getScript(_repo_baseurl + "/lib/canvas2svg.js", function () {
             if (typeof (_callback) === "function") {
                 _callback();
             }
@@ -46,17 +62,31 @@ var _convert_canvas_to_svg = function (_callback) {
             }
             var _id = _canvas.attr("id");
             //console.log(_id);
+			
+			if (_debug === true) {
+				_next(_i);
+				return;
+			}
 
-            var cs = new CanvasSVG.Deferred();
+            
             var canvas = document.getElementById(_id);
-
+			var cs = new CanvasSVG.Deferred();
             cs.wrapCanvas(canvas);
             $(canvas).click();
             var svg_object = cs.getSVG();
             var svg_text = svg_object.outerHTML;
-
-            var svg = new Blob([svg_text], {type: 'text/plain'});
-            saveAs(svg, _id + ".svg");
+			//console.log(svg_text);
+			
+			if (svg_text.replace(/>\s+</g,'><').split("><").length === 2) {
+				$(canvas).click();
+				svg_object = cs.getSVG();
+				svg_text = svg_object.outerHTML;
+			}
+			
+			if (svg_text.replace(/>\s+</g,'><').split("><").length > 2) {
+				var svg = new Blob([svg_text], {type: 'text/plain'});
+				saveAs(svg, _id + ".svg");
+			}
 
             _next(_i);
 
@@ -64,7 +94,6 @@ var _convert_canvas_to_svg = function (_callback) {
             if (typeof (_callback) === "function") {
                 _callback();
             }
-			
         }
     };
 
@@ -91,11 +120,19 @@ var _save_svg = function (_callback) {
             }
             var _id = _svg_item.attr("id");
             //console.log(_id);
+			
+			if (_debug === true) {
+				_next(_i);
+				return;
+			}
 
-            var svg_text = _svg_item.outerHTML;
-
-            var svg = new Blob([svg_text], {type: 'text/plain'});
-            saveAs(svg, _id + ".svg");
+			var _svg_object = document.getElementById(_id);
+            var svg_text = _svg_object.outerHTML;
+			//console.log(svg_text);
+			if (svg_text.replace(/>\s+</g,'><').split("><").length > 2) {
+				var svg = new Blob([svg_text], {type: 'text/plain'});
+				saveAs(svg, _id + ".svg");
+			}
 
             _next(_i);
 
@@ -115,6 +152,7 @@ var _save_svg = function (_callback) {
 if (typeof(_need_reload) === "undefined") {
 	_need_reload = false;
 }
+var _debug = false;
 
 var _main = function () {
 	
@@ -126,19 +164,80 @@ var _main = function () {
 	}
 	
     _load_filesaver(function () {
-        _load_canvassvg(function () {
-            _convert_canvas_to_svg(function () {
-				_save_svg(function () {
-					_need_reload = true;
+		_load_canvas2svg(function() {
+			_load_canvassvg(function () {
+				_convert_canvas_to_svg(function () {
+					_save_svg(function () {
+						_need_reload = true;
+						
+						if (_debug === true) {
+							_test_proc();
+						}
+					});
 				});
 			});
-        });
+
+		});
     });
+};
+
+cloneCanvas = function (newCanvas, oldCanvas) {
+
+    //create a new canvas
+    //var newCanvas = document.createElement('canvas');
+    context = newCanvas.getContext('2d');
+	oldContext = oldCanvas.getContext('2d');
+
+    //set dimensions
+    newCanvas.width = oldCanvas.width;
+    newCanvas.height = oldCanvas.height;
+
+    //apply the old canvas to the new one
+    context.drawImage(oldCanvas, 0, 0);
+	context.scale(1,1);
+	//imageData = oldContext.getImageData(0, 0, oldContext.canvas.width, oldContext.canvas.height);
+	//context.putImageData(imageData, 0, 0);
+
+    //return the new canvas
+    return newCanvas;
+};
+
+var _test_proc = function () {
+	oldCanvas = document.getElementById("canvas");
+	/*
+	//console.log(oldCanvas.toDataURL());
+	$('<canvas id="temp_canvas"></canvas>').prependTo("body");
+	newCanvas = document.getElementById("temp_canvas");
+	cs = new CanvasSVG.Deferred();
+	//cs.wrapCanvas(newCanvas);
+	cs.wrapCanvas(oldCanvas);
+	oldContext = oldCanvas.getContext('2d');
+	oldContext.scale(2,2);
+	setTimeout(function () {
+		//cloneCanvas(newCanvas, oldCanvas);
+		// 
+		setTimeout(function () {
+			console.log(cs.getSVG());
+		}, 0);
+
+	},0);
+	*/
+	var myMockContext = new C2S(600,400); //pass in your desired SVG document width/height
+
+	var draw = function(ctx) {
+		//do your normal drawing
+		ctx.drawImage(oldCanvas,0,0);
+		//etc...
+	}
+
+	draw(myMockContext);
+	myMockContext.getSerializedSvg(); //returns the serialized SVG document
+	console.log(myMockContext.getSvg()); //inline svg
 };
 
 // Load the script
 var script = document.createElement("SCRIPT");
-script.src = 'https://pulipulichen.github.io/canvas2svg-bookmarklet/lib/jquery-latest.min.js';
+script.src = _repo_baseurl + "/lib/jquery-latest.min.js";
 script.type = 'text/javascript';
 script.onload = function () {
     jQuery.noConflict();
